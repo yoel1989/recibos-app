@@ -410,4 +410,19 @@ function imprimirRecibo() {
   ventana.document.close();
 }
 
+function compartirRecibo() {
+  const id = $('reciboId').textContent;
+  const nombre = $('reciboNombre').textContent;
+  const telefono = $('reciboTelefono').textContent;
+  const periodo = $('reciboPeriodo').textContent;
+  const monto = $('reciboMonto').textContent;
+  const fecha = $('reciboFecha').textContent;
+  const texto = `🧾 ${id}\n\n${nombre}\n${telefono}\nPeríodo: ${periodo}\n${monto}\nEmisión: ${fecha}\n\nGracias por tu puntualidad.`;
+  if (navigator.share) {
+    navigator.share({ title: 'Recibo de Pago', text: texto });
+  } else {
+    navigator.clipboard.writeText(texto).then(() => alert('Texto del recibo copiado al portapapeles'));
+  }
+}
+
 document.addEventListener('DOMContentLoaded', init);
