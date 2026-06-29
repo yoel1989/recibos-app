@@ -410,19 +410,36 @@ function imprimirRecibo() {
   ventana.document.close();
 }
 
-function compartirRecibo() {
+function compartirReciboTexto() {
+  const id = $('reciboId').textContent;
+  const nombre = $('reciboNombre').textContent;
+  const telefono = $('reciboTelefono').textContent;
+  const periodo = $('reciboPeriodo').textContent;
+  const monto = $('reciboMonto').textContent;
+  const fecha = $('reciboFecha').textContent;
+  const texto = `🧾 ${id}\n━━━━━━━━━━━━━━━━\n${nombre}\n📞 ${telefono}\n📅 ${periodo}\n${monto}\n📆 ${fecha}\n━━━━━━━━━━━━━━━━\nGracias por tu puntualidad.`;
+  if (navigator.share) {
+    navigator.share({ title: 'Recibo de Pago', text: texto }).catch(() => {});
+  } else {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert('📋 Recibo copiado al portapapeles');
+    } catch (e) {
+      prompt('📋 Copiá este texto:', texto);
+    }
+  }
+}
+
+function descargarReciboImagen() {
   const recibo = document.querySelector('.recibo');
   html2canvas(recibo, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
     canvas.toBlob(blob => {
-      const file = new File([blob], 'recibo.png', { type: 'image/png' });
-      try {
-        if (navigator.share) {
-          navigator.share({ title: 'Recibo de Pago', files: [file] }).catch(() => {
-            navigator.share({ title: 'Recibo de Pago', text: '🧾 Recibo de Pago' }).catch(() => {});
-          });
-          return;
-        }
-      } catch (e) {}
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
