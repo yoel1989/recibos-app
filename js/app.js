@@ -370,7 +370,7 @@ function cancelarEdicion() {
   $('btnGuardarUsuario').textContent = 'Guardar';
 }
 
-function abrirRecibo(userId, mes, anio) {
+async function abrirRecibo(userId, mes, anio) {
   const u = usuarios.find(x => x.id === userId);
   if (!u) return;
   const m = mes || mesActual;
@@ -379,8 +379,10 @@ function abrirRecibo(userId, mes, anio) {
   $('reciboTelefono').textContent = u.telefono || '—';
   $('reciboPeriodo').textContent = `${meses[m - 1]} ${a}`;
   $('reciboMonto').textContent = `$${formatMonto(u.monto)}`;
-  $('reciboFecha').textContent = new Date().toLocaleDateString();
   $('reciboId').textContent = `R-${a}-${String(m).padStart(2,'0')}-${String(userId).padStart(3,'0')}`;
+  const pagos = await getPagosPorMes(a, m);
+  const pago = pagos.find(p => p.userId === userId);
+  $('reciboFecha').textContent = pago ? new Date(pago.fechaPago).toLocaleDateString() : new Date().toLocaleDateString();
   $('modalRecibo').classList.add('activo');
   reciboBlob = null;
   setTimeout(() => {
