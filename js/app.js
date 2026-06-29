@@ -411,29 +411,22 @@ function imprimirRecibo() {
 }
 
 function compartirRecibo() {
-  const id = $('reciboId').textContent;
-  const nombre = $('reciboNombre').textContent;
-  const telefono = $('reciboTelefono').textContent;
-  const periodo = $('reciboPeriodo').textContent;
-  const monto = $('reciboMonto').textContent;
-  const fecha = $('reciboFecha').textContent;
-  const texto = `🧾 ${id}\n${nombre} | ${telefono}\nPeríodo: ${periodo}\n${monto}\nEmisión: ${fecha}\n\nGracias por tu puntualidad.`;
-  if (navigator.share) {
-    navigator.share({ title: 'Recibo de Pago', text: texto }).catch(() => {});
-  } else {
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = texto;
-      ta.style.position = 'fixed'; ta.style.left = '-9999px';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      alert('📋 Recibo copiado al portapapeles');
-    } catch (e) {
-      prompt('📋 Copiá este texto:', texto);
-    }
-  }
+  const recibo = document.querySelector('.recibo');
+  html2canvas(recibo, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+    canvas.toBlob(blob => {
+      const file = new File([blob], 'recibo.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        navigator.share({ title: 'Recibo de Pago', files: [file] }).catch(() => {});
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'recibo.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);
