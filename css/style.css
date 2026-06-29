@@ -54,6 +54,7 @@ header h1 { font-size: 20px; }
 .mb { margin-bottom: 12px; }
 .text-center { text-align: center; }
 
+.table-wrapper { overflow-x: auto; margin-bottom: 8px; }
 .tabla {
   width: 100%; border-collapse: collapse; font-size: 14px;
 }

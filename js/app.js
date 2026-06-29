@@ -115,6 +115,7 @@ function configurarFormularios() {
     const data = {
       nombre: $('nombre').value.trim(),
       telefono: $('telefono').value.trim(),
+      vereda: $('vereda').value.trim(),
       monto: parseFloat($('monto').value)
     };
     if (!data.nombre || !data.monto) return;
@@ -156,20 +157,20 @@ function configurarFormularios() {
 function renderizarUsuarios() {
   const lista = $('listaUsuarios');
   if (usuarios.length === 0) {
-    lista.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">No hay usuarios registrados aún</p>';
+    lista.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px;">No hay usuarios registrados aún</td></tr>';
     return;
   }
   lista.innerHTML = usuarios.map(u => `
-    <div class="usuario-item">
-      <div class="usuario-info">
-        <div class="usuario-nombre">${u.nombre}</div>
-        <div class="usuario-detalle">${u.telefono ? '📞 ' + u.telefono : ''} — $${formatMonto(u.monto)}/mes</div>
-      </div>
-      <div class="usuario-acciones">
+    <tr>
+      <td>${u.nombre}</td>
+      <td>${u.telefono || '—'}</td>
+      <td>${u.vereda || '—'}</td>
+      <td>$${formatMonto(u.monto)}</td>
+      <td>
         <button class="btn btn-secundario btn-small" onclick="editarUsuario('${u.id}')">✏️</button>
         <button class="btn btn-peligro btn-small" onclick="eliminarUsuario('${u.id}')">🗑️</button>
-      </div>
-    </div>
+      </td>
+    </tr>
   `).join('');
   renderizarSelectPago();
 }
@@ -310,6 +311,7 @@ function editarUsuario(id) {
   editandoUsuario = id;
   $('nombre').value = u.nombre;
   $('telefono').value = u.telefono;
+  $('vereda').value = u.vereda;
   $('monto').value = u.monto;
   $('btnGuardarUsuario').textContent = 'Actualizar';
   $('formUsuario').scrollIntoView({ behavior: 'smooth' });

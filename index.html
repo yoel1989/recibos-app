@@ -67,6 +67,10 @@
             <input type="tel" id="telefono" placeholder="Ej: 555-1234">
           </div>
           <div class="campo">
+            <label for="vereda">Vereda</label>
+            <input type="text" id="vereda" placeholder="Ej: Vereda 3, San Cayetano">
+          </div>
+          <div class="campo">
             <label for="monto">Monto mensual ($)</label>
             <input type="number" id="monto" step="0.01" min="0.01" placeholder="Ej: 99.99" required>
           </div>
@@ -78,7 +82,20 @@
       </div>
       <div class="card">
         <h2>Usuarios Registrados</h2>
-        <div id="listaUsuarios"></div>
+        <div class="table-wrapper">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Vereda</th>
+                <th>Monto</th>
+                <th style="width:80px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="listaUsuarios"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
