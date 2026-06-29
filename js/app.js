@@ -415,16 +415,20 @@ function compartirRecibo() {
   html2canvas(recibo, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
     canvas.toBlob(blob => {
       const file = new File([blob], 'recibo.png', { type: 'image/png' });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        navigator.share({ title: 'Recibo de Pago', files: [file] }).catch(() => {});
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'recibo.png';
-        a.click();
-        URL.revokeObjectURL(url);
-      }
+      try {
+        if (navigator.share) {
+          navigator.share({ title: 'Recibo de Pago', files: [file] }).catch(() => {
+            navigator.share({ title: 'Recibo de Pago', text: '🧾 Recibo de Pago' }).catch(() => {});
+          });
+          return;
+        }
+      } catch (e) {}
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'recibo.png';
+      a.click();
+      URL.revokeObjectURL(url);
     });
   });
 }
