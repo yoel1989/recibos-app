@@ -17,6 +17,10 @@ const meses = [
 
 function $(id) { return document.getElementById(id); }
 function formatMonto(n) { return Math.round(n).toLocaleString('es-CL'); }
+function nextCod() {
+  const max = usuarios.reduce((m, u) => Math.max(m, u.cod || 0), 1000);
+  return max + 1;
+}
 
 function verPassword() {
   const input = $('loginPass');
@@ -90,6 +94,7 @@ async function cargarDatos() {
     usuarios = usuarios.filter(u => u.vereda && u.vereda.toLowerCase().includes('brisas'));
   }
   renderizarUsuarios();
+  if ($('cod')) $('cod').value = nextCod();
   renderizarSelectPago();
   renderizarSelectRecibo();
   initSelectoresRecibo();
@@ -116,6 +121,7 @@ function configurarFormularios() {
   $('formUsuario').addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
+      cod: parseInt($('cod').value) || nextCod(),
       nombre: $('nombre').value.trim(),
       telefono: $('telefono').value.trim(),
       vereda: $('vereda').value.trim(),
@@ -160,11 +166,12 @@ function configurarFormularios() {
 function renderizarUsuarios() {
   const lista = $('listaUsuarios');
   if (usuarios.length === 0) {
-    lista.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px;">No hay usuarios registrados aún</td></tr>';
+    lista.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px;">No hay usuarios registrados aún</td></tr>';
     return;
   }
   lista.innerHTML = usuarios.map(u => `
     <tr>
+      <td>${u.cod || '—'}</td>
       <td>${u.nombre}</td>
       <td>${u.telefono || '—'}</td>
       <td>${u.vereda || '—'}</td>
@@ -312,6 +319,7 @@ function editarUsuario(id) {
   const u = usuarios.find(x => x.id === id);
   if (!u) return;
   editandoUsuario = id;
+  $('cod').value = u.cod || '';
   $('nombre').value = u.nombre;
   $('telefono').value = u.telefono;
   $('vereda').value = u.vereda;
@@ -357,6 +365,7 @@ async function cargarHistorial() {
 function cancelarEdicion() {
   editandoUsuario = null;
   $('formUsuario').reset();
+  $('cod').value = nextCod();
   $('btnGuardarUsuario').textContent = 'Guardar';
 }
 
