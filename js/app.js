@@ -86,6 +86,9 @@ function cerrarSesion() {
 
 async function cargarDatos() {
   usuarios = await getAllUsuarios();
+  if (usuarioActivo === 'jesus') {
+    usuarios = usuarios.filter(u => u.vereda && u.vereda.toLowerCase().includes('brisas'));
+  }
   renderizarUsuarios();
   renderizarSelectPago();
   renderizarSelectRecibo();
