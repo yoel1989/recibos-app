@@ -417,11 +417,22 @@ function compartirRecibo() {
   const periodo = $('reciboPeriodo').textContent;
   const monto = $('reciboMonto').textContent;
   const fecha = $('reciboFecha').textContent;
-  const texto = `🧾 ${id}\n\n${nombre}\n${telefono}\nPeríodo: ${periodo}\n${monto}\nEmisión: ${fecha}\n\nGracias por tu puntualidad.`;
+  const texto = `🧾 ${id}\n${nombre} | ${telefono}\nPeríodo: ${periodo}\n${monto}\nEmisión: ${fecha}\n\nGracias por tu puntualidad.`;
   if (navigator.share) {
-    navigator.share({ title: 'Recibo de Pago', text: texto });
+    navigator.share({ title: 'Recibo de Pago', text: texto }).catch(() => {});
   } else {
-    navigator.clipboard.writeText(texto).then(() => alert('Texto del recibo copiado al portapapeles'));
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert('📋 Recibo copiado al portapapeles');
+    } catch (e) {
+      prompt('📋 Copiá este texto:', texto);
+    }
   }
 }
 
