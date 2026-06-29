@@ -9,6 +9,7 @@ let mesActual = new Date().getMonth() + 1;
 let anioActual = new Date().getFullYear();
 let editandoUsuario = null;
 let usuarioActivo = null;
+let reciboBlob = null;
 
 const meses = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -381,6 +382,12 @@ function abrirRecibo(userId, mes, anio) {
   $('reciboFecha').textContent = new Date().toLocaleDateString();
   $('reciboId').textContent = `R-${a}-${String(m).padStart(2,'0')}-${String(userId).padStart(3,'0')}`;
   $('modalRecibo').classList.add('activo');
+  reciboBlob = null;
+  setTimeout(() => {
+    html2canvas(document.querySelector('.recibo'), { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+      canvas.toBlob(blob => { reciboBlob = blob; });
+    });
+  }, 300);
 }
 
 function cerrarRecibo() {
@@ -411,6 +418,17 @@ function imprimirRecibo() {
 }
 
 function compartirReciboTexto() {
+  if (reciboBlob && navigator.share) {
+    const file = new File([reciboBlob], 'recibo.png', { type: 'image/png' });
+    navigator.share({ title: 'Recibo de Pago', files: [file] }).catch(() => {
+      compartirSoloTexto();
+    });
+  } else {
+    compartirSoloTexto();
+  }
+}
+
+function compartirSoloTexto() {
   const id = $('reciboId').textContent;
   const nombre = $('reciboNombre').textContent;
   const telefono = $('reciboTelefono').textContent;
